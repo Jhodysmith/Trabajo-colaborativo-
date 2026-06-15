@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Catálogo virtual de tecnología y gadgets electrónicos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&display=swap" rel="stylesheet">
+    <style>
+        /* ========== TODOS TUS ESTILOS ORIGINALES (NO MODIFICADOS) ========== */
+        @font-face {
+            font-family: 'Timegoing';
+            src: url('https://www.dafont.com/timegoing.font') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'GraffitiFont';
+            src: url('https://fonts.cdnfonts.com/css/graffiti-font') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        h1.hero-title {
+            font-family: 'GraffitiFont', cursive;
+            font-size: 3.5rem;
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            color: #ffffff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            overflow-x: hidden;
+        }
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .navbar:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+        .nav-link {
+            color: rgb(11, 144, 159) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link:hover {
+            color: #4ecdc4 !important;
+            transform: translateY(-2px);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffffff 0%, #fbfbfb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero .col-lg-4 {
+            position: relative;
+        }
+        .hero .col-lg-4::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130%;
+            height: 130%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(200, 220, 240, 0.5) 0%, rgba(255, 255, 255, 0) 80%);
+            filter: blur(30px);
+            pointer-events: none;
+            z-index: -1;
+            border-radius: 50%;
+        }
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 1s ease-out;
+            color: black;
+            text-shadow: 2px 2px 0 #000;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            color: black;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(11, 155, 171, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .glass-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .filter-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .filter-btn {
+            background: linear-gradient(45deg, #276e7e, #06ffe6);
+            border: none;
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .filter-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #1051a0);
+            font-weight: bold;
+        }
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(7, 115, 162, 0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        .product-card:hover::before {
+            left: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #4ecdc4;
+            box-shadow: 0 25px 50px rgba(78, 205, 196, 0.3);
+        }
+        .product-img {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: rgb(0, 0, 0);
+            transition: all 0.3s ease;
+        }
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /* Evita deformación y mantiene el tamaño */
+            border-radius: 15px;
+        }
+        .product-img:hover {
+            transform: rotateY(10deg) rotateX(5deg);
+        }
+        .btn-neon {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: rgb(8, 0, 0);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+        .btn-neon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+        .category-section {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        .category-card {
+            background: linear-gradient(135deg, rgba(251, 247, 247, 0.95), rgba(255, 255, 255, 0.95));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.1) 0%, transparent 70%);
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+        .category-card:hover::before {
+            transform: rotate(180deg);
+        }
+        .category-card:hover {
+            transform: translateY(-15px) rotateX(10deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+        .faq-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: black;
+        }
+        .faq-answer.active {
+            padding: 1.5rem;
+            max-height: 200px;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 0;
+        }
+        .social-icons a {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            color: rgb(231, 227, 227);
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        .social-icons a:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(6, 206, 206, 0.4);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .navbar-brand { font-size: 1.5rem; }
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas flotantes -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 0.5s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 1.5s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 3.5s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#home">TechStore</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#categorias">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#compra">Comprar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 hero-content">
+                    <h1 class="display-4 hero-title" style="color: black;">Bienvenidos a TechStore</h1>
+                    <p class="lead" style="color: black;">Descubre los mejores portátiles, smartphones, audífonos y accesorios tecnológicos. Calidad premium, diseños exclusivos y precios competitivos.</p>
+                    <div class="hero-buttons">
+                        <a href="#productos" class="btn btn-neon btn-lg me-3">
+                            <i class="fas fa-laptop-code me-2"></i>Ver Productos
+                        </a>
+                        <a href="#compra" class="btn btn-outline-dark btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Comprar ahora
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <img src="/static/images/Logo.png" alt="Logo" style="max-width: 150%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categorías -->
+    <section id="categorias" class="section category-section">
+        <div class="container">
+            <h2 class="text-center mb-5 fade-in" style="color: black;">Nuestras Categorías</h2>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="category-card fade-in">
+                        <div class="category-icon"><i class="fas fa-laptop"></i></div>
+                        <h3 class="mb-3" style="color: black;">Portátiles</h3>
+                        <p style="color: black;">Equipos de alto rendimiento para trabajo, gaming y estudio.</p>
+                        <a href="#portatiles" class="btn btn-neon mt-3">Ver Colección</a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="category-card fade-in">
+                        <div class="category-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h3 class="mb-3" style="color: black;">Smartphones</h3>
+                        <p style="color: black;">Gama alta, excelente cámara, batería de larga duración y 5G.</p>
+                        <a href="#smartphones" class="btn btn-neon mt-3">Ver Colección</a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="category-card fade-in">
+                        <div class="category-icon"><i class="fas fa-headphones"></i></div>
+                        <h3 class="mb-3" style="color: black;">Audio</h3>
+                        <p style="color: black;">Audífonos inalámbricos, cascos gaming y parlantes de alta fidelidad.</p>
+                        <a href="#audio" class="btn btn-neon mt-3">Ver Colección</a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="category-card fade-in">
+                        <div class="category-icon"><i class="fas fa-microchip"></i></div>
+                        <h3 class="mb-3" style="color: black;">Accesorios</h3>
+                        <p style="color: black;">Teclados, mouse, fundas, cargadores rápidos y más.</p>
+                        <a href="#accesorios" class="btn btn-neon mt-3">Ver Colección</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de productos con filtros (20 artículos) -->
+    <section id="productos" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5 fade-in" style="color: black;">Catálogo de Productos</h2>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="portatiles">Portátiles</button>
+                <button class="filter-btn" data-filter="smartphones">Smartphones</button>
+                <button class="filter-btn" data-filter="audio">Audio</button>
+                <button class="filter-btn" data-filter="accesorios">Accesorios</button>
+            </div>
+            <div class="row" id="productos-container">
+
+                <!-- Portátiles (5) -->
+                <div class="col-md-4 mb-4 product-item" data-category="portatiles">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/Fondo lateral portátil.png" alt="UltraBook Pro X1" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">UltraBook Pro X1</h4>
+                        <p class="text-muted">Intel Core i7, 16GB RAM, SSD 512GB, pantalla 14" 4K, batería 12h.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$3.999.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="UltraBook Pro X1" data-precio="3999900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="portatiles">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/stryker.png" alt="Gaming Stryker G7" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Gaming Stryker G7</h4>
+                        <p class="text-muted">Ryzen 7, RTX 4060, 32GB RAM, SSD 1TB, RGB mecánico.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$5.499.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Gaming Stryker G7" data-precio="5499900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="portatiles">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/EcoBook Lite.png" alt="EcoBook Lite" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">EcoBook Lite</h4>
+                        <p class="text-muted">Intel Core i5, 8GB RAM, SSD 256GB, liviano y eficiente.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$2.299.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="EcoBook Lite" data-precio="2299900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="portatiles">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/WorkStation Z.jpeg" alt="WorkStation Z" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">WorkStation Z</h4>
+                        <p class="text-muted">Intel Xeon, 64GB RAM, SSD 2TB, para diseño y edición.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$8.999.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="WorkStation Z" data-precio="8999900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="portatiles">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/Chromebook Spin.jpeg" alt="Chromebook Spin" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Chromebook Spin</h4>
+                        <p class="text-muted">Pantalla táctil 360°, 4GB RAM, 64GB eMMC, ideal estudiantes.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$1.199.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Chromebook Spin" data-precio="1199900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Smartphones (5) -->
+                <div class="col-md-4 mb-4 product-item" data-category="smartphones">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/Phantom X3 Pro.png" alt="Phantom X3 Pro" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Phantom X3 Pro</h4>
+                        <p class="text-muted">Pantalla AMOLED 120Hz, 256GB, cámara 108MP, 5G.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$2.999.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Phantom X3 Pro" data-precio="2999900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="smartphones">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/nova.png" alt="Nova Flash" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Nova Flash</h4>
+                        <p class="text-muted">6.7", 8GB RAM, 128GB, triple cámara, carga rápida 65W.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$1.799.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Nova Flash" data-precio="1799900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="smartphones">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/rugger.png" alt="Rugged Max" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Rugged Max</h4>
+                        <p class="text-muted">Resistente al agua y golpes, batería 6000mAh.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$1.499.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Rugged Max" data-precio="1499900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="smartphones">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/foldable.png" alt="Foldable Flex" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Foldable Flex</h4>
+                        <p class="text-muted">Pantalla plegable 7.6", Snapdragon 8 Gen 2, 12GB RAM.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$4.499.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Foldable Flex" data-precio="4499900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="smartphones">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/phone.png" alt="EcoPhone Zero" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">EcoPhone Zero</h4>
+                        <p class="text-muted">Materiales reciclados, 5G, batería 5000mAh, Android puro.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$1.299.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="EcoPhone Zero" data-precio="1299900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio (5) -->
+                <div class="col-md-4 mb-4 product-item" data-category="audio">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/diademas1.png" alt="SoundBass ANC" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">SoundBass ANC</h4>
+                        <p class="text-muted">Audífonos over-ear con cancelación activa de ruido, 40h batería.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$459.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="SoundBass ANC" data-precio="459900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="audio">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/airpho.png" alt="AirPro Inalámbricos" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">AirPro Inalámbricos</h4>
+                        <p class="text-muted">Estuche de carga, calidad de sonido premium, Bluetooth 5.3.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$189.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="AirPro Inalámbricos" data-precio="189900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="audio">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/parlante.png" alt="Speaker Boom 360" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Speaker Boom 360</h4>
+                        <p class="text-muted">Parlante portátil Bluetooth, IPX7, luces LED, 20W.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$299.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Speaker Boom 360" data-precio="299900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="audio">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/diademas.png" alt="Gaming Headset 7.1" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Gaming Headset 7.1</h4>
+                        <p class="text-muted">Sonido envolvente, micrófono flexible, almohadillas de espuma.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$279.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Gaming Headset 7.1" data-precio="279900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="audio">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/microfono.png" alt="Micrófono Podcast USB" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Micrófono Podcast USB</h4>
+                        <p class="text-muted">Grabación profesional, cancelación de ruido, compatible con PC.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$159.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Micrófono Podcast USB" data-precio="159900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accesorios (5) -->
+                <div class="col-md-4 mb-4 product-item" data-category="accesorios">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/TecladoRGV.png" alt="Teclado Mecánico RGB" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Teclado Mecánico RGB</h4>
+                        <p class="text-muted">Switches azules, iluminación RGB, resistente a derrames.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$249.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Teclado Mecánico RGB" data-precio="249900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="accesorios">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/RatónGamer.png" alt="Mouse Gamer Pro" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Mouse Gamer Pro</h4>
+                        <p class="text-muted">16000 DPI, 8 botones, RGB, cable paracord.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$129.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Mouse Gamer Pro" data-precio="129900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="accesorios">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/power.png" alt="Power Bank 20000mAh" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Power Bank 20000mAh</h4>
+                        <p class="text-muted">Carga rápida USB-C, doble salida, LED indicador.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$89.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Power Bank 20000mAh" data-precio="89900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="accesorios">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/cargador.png" alt="Cargador GaN 65W" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Cargador GaN 65W</h4>
+                        <p class="text-muted">Carga rápida para laptop, celular y tablet, compacto.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$79.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Cargador GaN 65W" data-precio="79900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 product-item" data-category="accesorios">
+                    <div class="product-card fade-in">
+                        <div class="product-img">
+                            <img src="/static/images/reloj.png" alt="Smartwatch Sport" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <h4 style="color: black;">Smartwatch Sport</h4>
+                        <p class="text-muted">Monitoreo de ritmo cardíaco, GPS, resistente al agua.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-success">$399.900</span>
+                            <button class="btn btn-neon btn-sm comprar-btn" data-nombre="Smartwatch Sport" data-precio="399900">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Información de Compra -->
+    <section id="compra" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5 fade-in" style="color: black;">Información de Compra</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="glass-card fade-in">
+                        <i class="fas fa-shipping-fast h2 mb-3"></i>
+                        <h4 style="color: black;">Envío Gratis</h4>
+                        <p style="color: black;">Envío gratuito en compras superiores a $200.000. Entrega en 2-3 días hábiles en todo el país.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="glass-card fade-in">
+                        <i class="fas fa-credit-card h2 mb-3"></i>
+                        <h4 style="color: black;">Pagos Seguros</h4>
+                        <p style="color: black;">Acepta todas las tarjetas de crédito, débito, PSE y pagos en efectivo en puntos autorizados.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="glass-card fade-in">
+                        <i class="fas fa-undo h2 mb-3"></i>
+                        <h4 style="color: black;">Garantía</h4>
+                        <p style="color: black;">30 días para cambios y devoluciones. Productos en perfecto estado con etiquetas originales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5 fade-in" style="color: black;">Preguntas Frecuentes</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="faq-item fade-in">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>¿Cuáles son los tiempos de entrega?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Los tiempos de entrega varían según la ciudad: Bogotá y Medellín 1-2 días, otras ciudades principales 2-3 días, municipios 3-5 días hábiles.
+                        </div>
+                    </div>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>¿Puedo cambiar un producto si no me gusta?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Sí, puedes cambiar dentro de los 30 días posteriores a la compra. El producto debe estar en perfecto estado con su empaque original.
+                        </div>
+                    </div>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>¿Todos los productos tienen garantía?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Sí, garantía del fabricante: 1 año para portátiles y smartphones, 6 meses para audífonos y accesorios.
+                        </div>
+                    </div>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>¿Cómo sé qué talla elegir en audífonos?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Los audífonos vienen con almohadillas ajustables. Si necesitas asesoría, contáctanos por WhatsApp.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">TechStore</h5>
+                    <p style="color: black;">Tu tienda de confianza para portátiles, smartphones, audífonos y accesorios tecnológicos de la más alta calidad.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">Contacto</h5>
+                    <p style="color: black;">
+                        <i class="fas fa-phone me-2"></i> +57 300 123 4567<br>
+                        <i class="fas fa-envelope me-2"></i> info@techstore.co<br>
+                        <i class="fas fa-map-marker-alt me-2"></i> Bogotá, Colombia
+                    </p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">Síguenos</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p style="color: black;">&copy; 2026 TechStore. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función para toggle FAQ
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            answer.classList.toggle('active');
+            icon.style.transform = answer.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // Efectos de scroll
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Efecto parallax para hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            handleScrollAnimation();
+        });
+
+        // Partículas dinámicas
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Lógica de filtrado de productos
+        function setupProductFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const productItems = document.querySelectorAll('.product-item');
+            
+            filterBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.dataset.filter;
+                    filterBtns.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    productItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Simular compra (puedes reemplazar después con carrito real)
+        function setupBuyButtons() {
+            document.querySelectorAll('.comprar-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const nombre = btn.getAttribute('data-nombre');
+                    const precio = btn.getAttribute('data-precio');
+                    alert(`🛒 Has añadido al carrito: ${nombre} por $${parseInt(precio).toLocaleString('es-CO')}. Próximamente podrás finalizar la compra.`);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            handleScrollAnimation();
+            setupProductFilters();
+            setupBuyButtons();
+            
+            // Efecto de navbar al hacer scroll
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.2)';
+                } else {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+                }
+            });
+
+            // Efecto ripple para botones
+            const buttons = document.querySelectorAll('.btn-neon');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        z-index: 0;
+                    `;
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+    </script>
+    <style>
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+    </style>
+</body>
+</html>
