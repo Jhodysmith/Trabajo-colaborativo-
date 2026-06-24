@@ -471,7 +471,9 @@
       border-radius: 10px;
       border: 1px solid rgba(0,229,255,0.12);
       background: rgba(0,229,255,0.03);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       gap: 8px;
       font-family: 'Exo 2', sans-serif;
       font-size: 0.82rem;
@@ -577,7 +579,7 @@
           <div class="brand-tagline">Next-gen electronics</div>
         </div>
 
-        <!-- Estadísticas / Seguridad y características (texto completamente intacto) -->
+        <!-- Estadísticas / Seguridad y características -->
         <div class="left-stats">
           <div class="stat-row">
             <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
@@ -619,7 +621,7 @@
           <span id="ts-alert-msg"></span>
         </div>
 
-        <!-- FORMULARIO (cliente con validación y redirección) -->
+        <!-- FORMULARIO -->
         <div id="login-form">
 
           <div class="field-group">
@@ -667,19 +669,20 @@
         </div>
 
         <div class="social-grid">
-          <a href="#" class="btn-social">
+          <a href="#" class="btn-social" id="btn-google">
             <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             Google
           </a>
-          <a href="#" class="btn-social">
+          <a href="#" class="btn-social" id="btn-facebook">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             Facebook
           </a>
         </div>
 
+        <!-- Enlace a registro -->
         <div class="register-row">
           ¿No tienes cuenta?
-          <a href="#">Crear cuenta gratis <i class="fas fa-arrow-right" style="font-size:0.7rem"></i></a>
+          <a href="Registro.html">Crear cuenta gratis <i class="fas fa-arrow-right" style="font-size:0.7rem"></i></a>
         </div>
 
       </div>
@@ -774,11 +777,32 @@
       else iconElement.className = 'fas fa-info-circle';
     }
 
-    function hideAlert() {
-      alertBox.style.display = 'none';
+    /* ── AUTENTICACIÓN SOCIAL ── */
+    function autenticarSocial(proveedor) {
+      const usuarios = JSON.parse(localStorage.getItem('techstore_usuarios')) || [];
+      if (usuarios.length === 0) {
+        showAlert('error', '⚠️ No hay usuarios registrados. Crea una cuenta primero.');
+        return;
+      }
+      const usuario = usuarios[0];
+      localStorage.setItem('techstore_usuario_actual', JSON.stringify(usuario));
+      showAlert('success', `✅ Conectado con ${proveedor}. Redirigiendo...`);
+      setTimeout(() => {
+        window.location.href = 'inicio.html';
+      }, 1000);
     }
 
-    /* ── LOGIN CON REDIRECCIÓN A inicio.html ── */
+    document.getElementById('btn-google').addEventListener('click', function(e) {
+      e.preventDefault();
+      autenticarSocial('Google');
+    });
+
+    document.getElementById('btn-facebook').addEventListener('click', function(e) {
+      e.preventDefault();
+      autenticarSocial('Facebook');
+    });
+
+    /* ─── LOGIN CON REDIRECCIÓN CONDICIONAL ─── */
     const loginBtn = document.getElementById('login-btn');
     let redirectTimer = null;
 
@@ -788,7 +812,6 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      // Validación de campos
       if (!email) {
         showAlert('error', '⚠️ Por favor ingresa tu usuario o correo.');
         return;
@@ -802,34 +825,47 @@
         return;
       }
 
-      // Simulación de autenticación + redirección a inicio.html
+      // ===== VERIFICACIÓN ESPECIAL PARA EL JEFE =====
+      if (email === 'jefe@gmail.com' && password === '1234567') {
+        showAlert('success', '✅ Acceso de administrador. Redirigiendo al panel de control...');
+        // No guardamos en localStorage para que no afecte a otros usuarios
+        setTimeout(() => {
+          window.location.href = 'jefe.html';
+        }, 1000);
+        return;
+      }
+
+      // ===== VALIDACIÓN PARA USUARIOS NORMALES =====
+      const usuarios = JSON.parse(localStorage.getItem('techstore_usuarios')) || [];
+      const usuarioValido = usuarios.find(u => u.email === email && u.password === password);
+
+      if (!usuarioValido) {
+        showAlert('error', '❌ Credenciales incorrectas. Verifica tu correo y contraseña.');
+        return;
+      }
+
+      // Guardar usuario actual para la sesión
+      localStorage.setItem('techstore_usuario_actual', JSON.stringify(usuarioValido));
+
       loginBtn.classList.add('loading');
       loginBtn.disabled = true;
 
-      // Efecto visual de carga y después redirige
       if (redirectTimer) clearTimeout(redirectTimer);
-      
-      // Pequeño delay para feedback visual (simula verificación)
       redirectTimer = setTimeout(() => {
-        // Éxito: mostrar mensaje y redirigir
-        showAlert('success', '✓ Credenciales válidas. Redirigiendo al panel...');
+        showAlert('success', `✅ Bienvenido, ${usuarioValido.nombre}. Redirigiendo a la tienda...`);
         setTimeout(() => {
           window.location.href = 'inicio.html';
         }, 800);
       }, 1000);
     });
 
-    // Permitir ENTER en los inputs para activar login
     const emailInput = document.getElementById('email');
     emailInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loginBtn.click(); });
     passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
-    // Prevenir enlaces que rompan navegación
-    document.querySelectorAll('.forgot-link, .register-row a, .btn-social').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        showAlert('info', '🚧 Demo: Esta función estará disponible próximamente.');
-      });
+    document.querySelector('.forgot-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAlert('info', '🔐 Función de recuperación en desarrollo. Contáctanos para asistencia.');
     });
   </script>
 </body>

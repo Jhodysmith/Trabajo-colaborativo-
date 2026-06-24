@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Panel de Control · Jefe</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: #0a0f1e;
+      color: #ffffff;
+      padding: 1.5rem;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ===== PARTÍCULAS DE FONDO ===== */
+    #particlesCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container-fluid {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== TÍTULOS ===== */
+    .dashboard-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #00e5ff, #4ecdc4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+      animation: fadeSlideDown 0.8s ease both;
+    }
+
+    .btn-back {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: #00e5ff;
+      border-radius: 40px;
+      padding: 0.5rem 1.5rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(4px);
+    }
+    .btn-back:hover {
+      background: rgba(0, 229, 255, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* ===== TARJETAS GLASSMORPHISM ===== */
+    .card-cyber {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 28px;
+      padding: 1.8rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(0, 229, 255, 0.1);
+      transition: all 0.4s ease;
+      animation: fadeSlideUp 0.6s ease both;
+    }
+    .card-cyber:hover {
+      border-color: rgba(0, 229, 255, 0.5);
+      box-shadow: 0 12px 40px rgba(0, 229, 255, 0.15), inset 0 1px 0 rgba(0, 229, 255, 0.2);
+      transform: translateY(-4px);
+    }
+    .card-cyber:nth-child(1) { animation-delay: 0.1s; }
+    .card-cyber:nth-child(2) { animation-delay: 0.2s; }
+    .card-cyber:nth-child(3) { animation-delay: 0.3s; }
+
+    .card-cyber .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      color: #00e5ff;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-cyber .card-title i {
+      font-size: 1.2rem;
+    }
+
+    .stat-number {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #fd0000;
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 1px;
+    }
+    .stat-label {
+      color: rgba(180, 220, 255, 0.7);
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    /* ===== TABLA ===== */
+    .table-ventas {
+      background: rgba(0, 229, 255, 0.03);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .table-ventas th {
+      background: rgba(0, 229, 255, 0.08);
+      color: #00e5ff;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(0, 229, 255, 0.2);
+      padding: 0.9rem 0.8rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .table-ventas td {
+      color: #e00000;
+      border-color: rgba(0, 229, 255, 0.08);
+      padding: 0.8rem;
+      vertical-align: middle;
+      font-size: 0.95rem;
+    }
+    .table-ventas tr:hover td {
+      background: rgba(0, 229, 255, 0.05);
+    }
+    .table-ventas tr {
+      transition: background 0.2s;
+    }
+    .badge-product {
+      background: rgba(0, 229, 255, 0.15);
+      color: #00e5ff;
+      padding: 0.25rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+    }
+    .table-responsive {
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .table-responsive::-webkit-scrollbar {
+      width: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-track {
+      background: rgba(0,229,255,0.05);
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #00e5ff;
+      border-radius: 4px;
+    }
+
+    /* ===== RANKING Y MENSUAL ===== */
+    .rank-item, .ingreso-mes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.06);
+      transition: background 0.2s;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      border-radius: 8px;
+    }
+    .rank-item:hover, .ingreso-mes:hover {
+      background: rgba(0, 229, 255, 0.05);
+    }
+    .rank-item:last-child, .ingreso-mes:last-child {
+      border-bottom: none;
+    }
+    .rank-number {
+      font-weight: 700;
+      color: #4ecdc4;
+      margin-right: 0.8rem;
+      font-size: 1rem;
+      min-width: 30px;
+      display: inline-block;
+    }
+    .rank-name {
+      color: #f7f7f7;
+      font-weight: 500;
+    }
+    .rank-badge {
+      background: rgba(0, 229, 255, 0.12);
+      color: #00e5ff;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      border: 1px solid rgba(0, 229, 255, 0.15);
+    }
+    .mes {
+      color: #8bb4ff;
+      font-weight: 500;
+    }
+    .monto {
+      font-weight: 600;
+      color: #ff0000;
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 0.5px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(180, 220, 255, 0.4);
+      font-style: italic;
+    }
+
+    /* ===== ANIMACIONES ===== */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.1); }
+      50% { box-shadow: 0 0 25px rgba(0, 229, 255, 0.3); }
+      100% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.1); }
+    }
+    .card-cyber {
+      animation: fadeSlideUp 0.6s ease both, pulseGlow 4s infinite ease-in-out;
+    }
+    .card-cyber:nth-child(1) { animation-delay: 0.1s; }
+    .card-cyber:nth-child(2) { animation-delay: 0.2s; }
+    .card-cyber:nth-child(3) { animation-delay: 0.3s; }
+    .card-cyber:nth-child(4) { animation-delay: 0.4s; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .dashboard-title { font-size: 1.6rem; }
+      .stat-number { font-size: 2rem; }
+      .card-cyber { padding: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PARTÍCULAS ===== -->
+  <canvas id="particlesCanvas"></canvas>
+
+  <div class="container-fluid">
+    <!-- Encabezado -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+      <h1 class="dashboard-title"><i class="fas fa-chart-pie me-2"></i>Panel de Control</h1>
+      <a href="Inicio.html" class="btn-back"><i class="fas fa-arrow-left"></i> Volver a la tienda</a>
+    </div>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card-cyber">
+          <div class="card-title"><i class="fas fa-shopping-bag"></i>Total Ventas</div>
+          <div class="stat-number" id="totalVentas">0</div>
+          <div class="stat-label">Transacciones registradas</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-cyber">
+          <div class="card-title"><i class="fas fa-coins"></i>Ingresos Totales</div>
+          <div class="stat-number" id="ingresosTotales">$0</div>
+          <div class="stat-label">Acumulado desde el inicio</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-cyber">
+          <div class="card-title"><i class="fas fa-crown"></i>Producto Más Vendido</div>
+          <div class="stat-number" id="productoTop" style="font-size:1.8rem;">-</div>
+          <div class="stat-label">El favorito de tus clientes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de ventas -->
+    <div class="card-cyber">
+      <div class="card-title"><i class="fas fa-list-ul"></i>Historial completo de ventas</div>
+      <div class="table-responsive">
+        <table class="table table-ventas table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Correo</th>
+              <th>Producto</th>
+              <th>Valor (COP)</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="tablaVentasBody">
+            <tr><td colspan="6" class="text-center" style="color:rgba(180,220,255,0.5);">Cargando datos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ingresos mensuales + Ranking -->
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card-cyber">
+          <div class="card-title"><i class="fas fa-calendar-alt"></i>Ingresos Mensuales</div>
+          <div id="ingresosMensuales">
+            <div class="empty-state">Sin datos aún</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-cyber">
+          <div class="card-title"><i class="fas fa-trophy"></i>Ranking de Productos</div>
+          <div id="rankingProductos">
+            <div class="empty-state">Sin productos vendidos aún</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== PARTÍCULAS =====
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6;
+        this.r = Math.random() * 2.5 + 1;
+        this.a = Math.random() * 0.5 + 0.2;
+        this.color = Math.random() > 0.5 ? '0,229,255' : '78,205,196';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.a})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0,229,255,${0.05 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ===== DATOS =====
+    function obtenerVentas() {
+      const data = localStorage.getItem('techstore_ventas');
+      return data ? JSON.parse(data) : [];
+    }
+
+    function formatCOP(valor) {
+      return '$' + Number(valor).toLocaleString('es-CO');
+    }
+
+    // Contador animado
+    function animarContador(elemento, valorFinal, esMoneda = false) {
+      let valorActual = 0;
+      const incremento = Math.max(1, Math.floor(valorFinal / 40));
+      const intervalo = setInterval(() => {
+        valorActual += incremento;
+        if (valorActual >= valorFinal) {
+          valorActual = valorFinal;
+          clearInterval(intervalo);
+        }
+        elemento.textContent = esMoneda ? formatCOP(valorActual) : valorActual;
+      }, 25);
+    }
+
+    function renderizarPanel() {
+      const ventas = obtenerVentas();
+      const totalVentas = ventas.length;
+      const ingresosTotales = ventas.reduce((sum, v) => sum + v.valor, 0);
+
+      // Contadores animados
+      const totalVentasEl = document.getElementById('totalVentas');
+      const ingresosTotalesEl = document.getElementById('ingresosTotales');
+      animarContador(totalVentasEl, totalVentas, false);
+      animarContador(ingresosTotalesEl, ingresosTotales, true);
+
+      // Producto más vendido
+      const contador = {};
+      ventas.forEach(v => {
+        contador[v.producto] = (contador[v.producto] || 0) + 1;
+      });
+      let topProducto = '-';
+      let topCantidad = 0;
+      for (const [prod, cant] of Object.entries(contador)) {
+        if (cant > topCantidad) {
+          topCantidad = cant;
+          topProducto = prod;
+        }
+      }
+      document.getElementById('productoTop').textContent = topProducto !== '-' ? `${topProducto}` : '-';
+
+      // Tabla
+      const tbody = document.getElementById('tablaVentasBody');
+      if (ventas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:rgba(180,220,255,0.5);">No hay ventas registradas aún.</td></tr>';
+      } else {
+        tbody.innerHTML = ventas.map((v, i) => `
+          <tr>
+            <td>${i+1}</td>
+            <td>${v.correo}</td>
+            <td><span class="badge-product">${v.producto}</span></td>
+            <td>${formatCOP(v.valor)}</td>
+            <td>${v.fecha || '--'}</td>
+            <td>${v.hora || '--'}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Ingresos mensuales
+      const meses = {};
+      ventas.forEach(v => {
+        if (!v.fecha) return;
+        const partes = v.fecha.split('/');
+        if (partes.length === 3) {
+          const mes = partes[1];
+          const año = partes[2];
+          const key = `${mes}/${año}`;
+          meses[key] = (meses[key] || 0) + v.valor;
+        }
+      });
+      const divMensual = document.getElementById('ingresosMensuales');
+      const keysMensual = Object.keys(meses).sort((a,b) => {
+        const [m1,a1] = a.split('/');
+        const [m2,a2] = b.split('/');
+        if (a1 !== a2) return a2 - a1;
+        return m2 - m1;
+      });
+      if (keysMensual.length === 0) {
+        divMensual.innerHTML = '<div class="empty-state">Sin datos mensuales</div>';
+      } else {
+        divMensual.innerHTML = keysMensual.map(key => `
+          <div class="ingreso-mes">
+            <span class="mes">${key}</span>
+            <span class="monto">${formatCOP(meses[key])}</span>
+          </div>
+        `).join('');
+      }
+
+      // Ranking
+      const ranking = Object.entries(contador).sort((a,b) => b[1] - a[1]);
+      const divRanking = document.getElementById('rankingProductos');
+      if (ranking.length === 0) {
+        divRanking.innerHTML = '<div class="empty-state">Sin productos vendidos aún</div>';
+      } else {
+        divRanking.innerHTML = ranking.map(([prod, cant], idx) => `
+          <div class="rank-item">
+            <span>
+              <span class="rank-number">#${idx+1}</span>
+              <span class="rank-name">${prod}</span>
+            </span>
+            <span class="rank-badge">${cant} unidades</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderizarPanel);
+  </script>
+</body>
+</html>

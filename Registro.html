@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>TechStore · Registro Cyber</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET Y BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: #050A15;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== FONDO CON PARTÍCULAS ===== */
+    .particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Luces de fondo - azules/cibernéticas */
+    .cyber-glow {
+      position: fixed;
+      width: 60vmax;
+      height: 60vmax;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+    .cyber-glow-1 {
+      top: -20%;
+      left: -10%;
+      background: radial-gradient(circle, rgba(0, 180, 255, 0.3) 0%, transparent 70%);
+      animation: floatGlow 8s ease-in-out infinite alternate;
+    }
+    .cyber-glow-2 {
+      bottom: -20%;
+      right: -10%;
+      background: radial-gradient(circle, rgba(78, 205, 196, 0.2) 0%, transparent 70%);
+      animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+    }
+    .cyber-glow-3 {
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
+      animation: floatGlow 12s ease-in-out infinite alternate;
+    }
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, -20px) scale(1.1); }
+    }
+
+    /* ===== TARJETA PRINCIPAL ===== */
+    .register-card {
+      position: relative;
+      z-index: 20;
+      background: rgba(8, 18, 38, 0.8);
+      backdrop-filter: blur(16px);
+      border-radius: 48px;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      box-shadow: 
+        0 25px 50px -15px rgba(0,0,0,0.8),
+        0 0 0 0.5px rgba(0, 229, 255, 0.2) inset,
+        0 0 30px rgba(0, 229, 255, 0.1);
+      padding: 2.8rem 2.5rem;
+      max-width: 520px;
+      width: 100%;
+      animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes cardAppear {
+      0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ===== LOGO ===== */
+    .logo-container {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    .logo-store {
+      max-width: 160px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.6));
+      transition: filter 0.3s;
+    }
+    .logo-store:hover {
+      filter: drop-shadow(0 0 35px rgba(0, 229, 255, 0.9));
+    }
+
+    /* ===== TÍTULOS ===== */
+    .cyber-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #00e5ff 0%, #4ecdc4 50%, #a8edea 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2rem;
+      text-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+    }
+    .subtitle {
+      color: rgba(180, 220, 255, 0.6);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== CAMPOS DE FORMULARIO ===== */
+    .form-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(0, 229, 255, 0.8);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      background: rgba(0, 229, 255, 0.05);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 24px;
+      color: #F0F5FF;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 500;
+      padding: 14px 20px;
+      transition: all 0.3s;
+      backdrop-filter: blur(4px);
+    }
+    .form-control:focus {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: #00e5ff;
+      box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.2);
+      outline: none;
+      color: white;
+    }
+    .form-control::placeholder {
+      color: rgba(255,255,255,0.2);
+      font-weight: 300;
+    }
+
+    /* ===== BOTÓN PRINCIPAL ===== */
+    .btn-register {
+      background: linear-gradient(135deg, #00c4d4, #00e5ff, #4ecdc4);
+      border: none;
+      color: #040D1A;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      padding: 14px 20px;
+      border-radius: 40px;
+      width: 100%;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 229, 255, 0.3);
+    }
+    .btn-register::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-register:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 229, 255, 0.5);
+    }
+    .btn-register:hover::before {
+      left: 100%;
+    }
+
+    /* ===== ENLACE VOLVER ===== */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 1.5rem;
+      color: rgba(0, 229, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: 0.2s;
+      background: rgba(0, 229, 255, 0.06);
+      padding: 8px 20px;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0, 229, 255, 0.1);
+    }
+    .back-link:hover {
+      color: #00e5ff;
+      background: rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.3);
+      text-shadow: 0 0 8px #00e5ff;
+    }
+
+    /* ===== ALERTAS Y ERRORES ===== */
+    .error-message {
+      background: rgba(255, 70, 70, 0.1);
+      border-left: 3px solid #ff4d4d;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #ffb3b3;
+      margin-top: 0.8rem;
+    }
+    .ts-alert {
+      display: none;
+      padding: 10px 16px;
+      border-radius: 16px;
+      font-size: 0.82rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid;
+      letter-spacing: 0.3px;
+      animation: alert-in 0.3s ease both;
+      backdrop-filter: blur(4px);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ts-alert.error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,70,70,0.08);
+      border-color: rgba(255,70,70,0.3);
+      color: #ff9898;
+    }
+    .ts-alert.success {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,229,255,0.08);
+      border-color: rgba(0,229,255,0.3);
+      color: #8dd0ff;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .register-card { padding: 1.8rem; }
+      .logo-store { max-width: 100px; }
+      .cyber-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== FONDO DE PARTÍCULAS ===== -->
+  <canvas class="particles-canvas" id="particlesCanvas"></canvas>
+
+  <!-- ===== LUCES DE FONDO ===== -->
+  <div class="cyber-glow cyber-glow-1"></div>
+  <div class="cyber-glow cyber-glow-2"></div>
+  <div class="cyber-glow cyber-glow-3"></div>
+
+  <!-- ===== TARJETA ===== -->
+  <div class="register-card">
+    <!-- LOGO -->
+    <div class="logo-container">
+      <img src="/static/images/logo.png" alt="TechStore" class="logo-store" onerror="this.src='https://placehold.co/160x60?text=TechStore&bg=0a1f3a&textColor=00e5ff'">
+    </div>
+
+    <div class="text-center mb-4">
+      <h2 class="cyber-title">Registro Cyber</h2>
+      <p class="subtitle">Crea tu cuenta y accede al futuro</p>
+    </div>
+
+    <!-- ALERTA -->
+    <div class="ts-alert" id="ts-alert">
+      <i class="fas fa-circle-info"></i>
+      <span id="ts-alert-msg"></span>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form id="registerForm">
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-user me-1"></i> Nombre completo</label>
+        <input type="text" class="form-control" id="fullname" placeholder="Tu nombre" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-envelope me-1"></i> Correo electrónico</label>
+        <input type="email" class="form-control" id="email" placeholder="usuario@techstore.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-lock me-1"></i> Contraseña</label>
+        <input type="password" class="form-control" id="password" placeholder="Mínimo 6 caracteres" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-check-circle me-1"></i> Confirmar contraseña</label>
+        <input type="password" class="form-control" id="confirmPassword" placeholder="Repite tu contraseña" required>
+      </div>
+
+      <div id="errorMsg" class="error-message"></div>
+
+      <button type="submit" class="btn-register mt-3">
+        <i class="fas fa-rocket me-2"></i> Crear cuenta
+      </button>
+    </form>
+
+    <div class="text-center">
+      <!-- ===== ENLACE MODIFICADO: redirige a sesion.html ===== -->
+      <a href="sesion.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al acceso</a>
+    </div>
+  </div>
+
+  <script>
+    // ===== PARTÍCULAS DINÁMICAS =====
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.r = Math.random() * 2.5 + 1;
+        this.a = Math.random() * 0.5 + 0.2;
+        this.color = Math.random() > 0.5 ? '0,229,255' : '78,205,196';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.a})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0,229,255,${0.05 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ===== LÓGICA DE REGISTRO =====
+    const form = document.getElementById('registerForm');
+    const alertBox = document.getElementById('ts-alert');
+    const alertMsg = document.getElementById('ts-alert-msg');
+    const errorDiv = document.getElementById('errorMsg');
+
+    function showAlert(type, message) {
+      alertBox.className = `ts-alert ${type}`;
+      alertMsg.innerText = message;
+      const icon = alertBox.querySelector('i');
+      if (type === 'error') icon.className = 'fas fa-circle-xmark';
+      else if (type === 'success') icon.className = 'fas fa-circle-check';
+      else icon.className = 'fas fa-circle-info';
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const fullname = document.getElementById('fullname').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value.trim();
+      const confirm = document.getElementById('confirmPassword').value.trim();
+
+      errorDiv.innerText = '';
+
+      if (!fullname || !email || !password || !confirm) {
+        errorDiv.innerText = '⚠️ Todos los campos son obligatorios.';
+        return;
+      }
+      if (password.length < 6) {
+        errorDiv.innerText = '❌ La contraseña debe tener al menos 6 caracteres.';
+        return;
+      }
+      if (password !== confirm) {
+        errorDiv.innerText = '❌ Las contraseñas no coinciden.';
+        return;
+      }
+
+      const usuarios = JSON.parse(localStorage.getItem('techstore_usuarios')) || [];
+      if (usuarios.find(u => u.email === email)) {
+        errorDiv.innerText = '⚠️ Este correo ya está registrado. Inicia sesión o usa otro.';
+        return;
+      }
+
+      const nuevoUsuario = {
+        id: Date.now(),
+        nombre: fullname,
+        email: email,
+        password: password,
+        fechaRegistro: new Date().toISOString()
+      };
+      usuarios.push(nuevoUsuario);
+      localStorage.setItem('techstore_usuarios', JSON.stringify(usuarios));
+      localStorage.setItem('techstore_usuario_actual', JSON.stringify(nuevoUsuario));
+
+      showAlert('success', '✅ Cuenta creada exitosamente. Redirigiendo...');
+      setTimeout(() => {
+        window.location.href = 'sesion.html';
+      }, 1200);
+    });
+  </script>
+</body>
+</html>

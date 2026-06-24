@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechStore - Carrito de compras</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== Mismos estilos que index ===== */
+        @font-face {
+            font-family: 'GraffitiFont';
+            src: url('https://fonts.cdnfonts.com/css/graffiti-font') format('truetype');
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+        .nav-link {
+            color: rgb(11, 144, 159) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #4ecdc4 !important;
+            transform: translateY(-2px);
+        }
+        .section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(11, 155, 171, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .btn-neon {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: rgb(8, 0, 0);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-neon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+        .btn-outline-danger {
+            border-radius: 50px;
+        }
+        .table img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .total-row {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 0;
+        }
+        .social-icons a {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            color: rgb(231, 227, 227);
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        .social-icons a:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(6, 206, 206, 0.4);
+        }
+        @media (max-width: 768px) {
+            .navbar-brand { font-size: 1.5rem; }
+        }
+        .producto-nombre-link {
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .producto-nombre-link:hover {
+            color: #4ecdc4;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Partículas -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="Inicio.html">TechStore</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="Inicio.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Inicio.html">Categorías</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Informes.html">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="carrito.html">🛒 Carrito</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Carrito -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in active" style="color: black;">🧾 Mi Carrito</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="glass-card fade-in active">
+                        <!-- Tabla del carrito -->
+                        <div id="carrito-contenido">
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Nombre</th>
+                                            <th>Precio</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="carrito-body">
+                                        <!-- Se llena con JS -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="total-row">
+                                            <td colspan="4" class="text-end">TOTAL</td>
+                                            <td id="total-carrito">$0</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div id="carrito-vacio" class="text-center py-4" style="display: none;">
+                                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                <p class="lead">Tu carrito está vacío</p>
+                                <a href="Inicio.html" class="btn btn-neon">Ver productos</a>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4">
+                            <button class="btn btn-outline-danger" onclick="vaciarCarrito()">
+                                <i class="fas fa-trash-alt me-2"></i>Vaciar carrito
+                            </button>
+                            <button class="btn btn-neon" onclick="finalizarCompra()">
+                                <i class="fas fa-credit-card me-2"></i>Finalizar compra
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">TechStore</h5>
+                    <p style="color: black;">Tu tienda de confianza para tecnología de vanguardia.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">Contacto</h5>
+                    <p style="color: black;">
+                        <i class="fas fa-phone me-2"></i> +57 300 123 4567<br />
+                        <i class="fas fa-envelope me-2"></i> info@techstore.co
+                    </p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: black;">Síguenos</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="text-center">
+                <p style="color: black;">&copy; 2026 TechStore. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ========== LÓGICA DEL CARRITO ==========
+
+        function obtenerCarrito() {
+            const carrito = localStorage.getItem('carrito');
+            return carrito ? JSON.parse(carrito) : [];
+        }
+
+        function guardarCarrito(carrito) {
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+        }
+
+        function agregarProductoAlCarrito(nombre, precio, img) {
+            let carrito = obtenerCarrito();
+            const existe = carrito.find(item => item.nombre === nombre);
+            if (existe) {
+                existe.cantidad += 1;
+            } else {
+                carrito.push({
+                    nombre: nombre,
+                    precio: parseInt(precio),
+                    img: img,
+                    cantidad: 1
+                });
+            }
+            guardarCarrito(carrito);
+            renderizarCarrito();
+        }
+
+        function eliminarProducto(index) {
+            let carrito = obtenerCarrito();
+            carrito.splice(index, 1);
+            guardarCarrito(carrito);
+            renderizarCarrito();
+        }
+
+        function vaciarCarrito() {
+            if (confirm('¿Seguro que quieres vaciar el carrito?')) {
+                localStorage.removeItem('carrito');
+                renderizarCarrito();
+            }
+        }
+
+        // ===== FUNCIÓN MODIFICADA: Redirige a pago.html =====
+        function finalizarCompra() {
+            const carrito = obtenerCarrito();
+            if (carrito.length === 0) {
+                alert('El carrito está vacío. Agrega productos primero.');
+                return;
+            }
+            // Redirigir a pago.html (el carrito se leerá desde localStorage allí)
+            window.location.href = 'pago.html';
+        }
+
+        function cambiarCantidad(index, delta) {
+            let carrito = obtenerCarrito();
+            if (!carrito[index]) return;
+            const nuevaCant = carrito[index].cantidad + delta;
+            if (nuevaCant < 1) {
+                eliminarProducto(index);
+                return;
+            }
+            carrito[index].cantidad = nuevaCant;
+            guardarCarrito(carrito);
+            renderizarCarrito();
+        }
+
+        function renderizarCarrito() {
+            const carrito = obtenerCarrito();
+            const tbody = document.getElementById('carrito-body');
+            const totalSpan = document.getElementById('total-carrito');
+            const vacioDiv = document.getElementById('carrito-vacio');
+
+            if (carrito.length === 0) {
+                tbody.innerHTML = '';
+                totalSpan.textContent = '$0';
+                vacioDiv.style.display = 'block';
+                return;
+            }
+            vacioDiv.style.display = 'none';
+
+            let html = '';
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                html += `
+                    <tr>
+                        <td><img src="${item.img || '/static/images/default.png'}" alt="${item.nombre}" onerror="this.src='/static/images/default.png'"></td>
+                        <td>
+                            <a href="Inicio.html#productos" class="producto-nombre-link" title="Ver producto en el catálogo">
+                                <strong>${item.nombre}</strong>
+                            </a>
+                        </td>
+                        <td>$${item.precio.toLocaleString()}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="cambiarCantidad(${index}, -1)">-</button>
+                                <span>${item.cantidad}</span>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>$${subtotal.toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarProducto(${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            totalSpan.textContent = `$${total.toLocaleString()}`;
+        }
+
+        // ========== INICIALIZACIÓN ==========
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Partículas
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 6 + 's';
+                p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(p);
+            }
+
+            // Leer parámetros URL para agregar producto (si vienen de Inicio.html)
+            const params = new URLSearchParams(window.location.search);
+            const producto = params.get('producto');
+            const precio = params.get('precio');
+            const img = params.get('img');
+
+            if (producto && precio) {
+                agregarProductoAlCarrito(
+                    decodeURIComponent(producto),
+                    decodeURIComponent(precio),
+                    decodeURIComponent(img || '/static/images/default.png')
+                );
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                renderizarCarrito();
+            }
+
+            document.querySelectorAll('.fade-in').forEach(el => el.classList.add('active'));
+        });
+    </script>
+</body>
+</html>

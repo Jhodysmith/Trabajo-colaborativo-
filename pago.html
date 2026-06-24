@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>TechStore · Pago</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: #050A15;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .cyber-glow {
+      position: fixed;
+      width: 60vmax;
+      height: 60vmax;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+    .cyber-glow-1 {
+      top: -20%;
+      left: -10%;
+      background: radial-gradient(circle, rgba(0, 180, 255, 0.3) 0%, transparent 70%);
+      animation: floatGlow 8s ease-in-out infinite alternate;
+    }
+    .cyber-glow-2 {
+      bottom: -20%;
+      right: -10%;
+      background: radial-gradient(circle, rgba(78, 205, 196, 0.2) 0%, transparent 70%);
+      animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+    }
+    .cyber-glow-3 {
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
+      animation: floatGlow 12s ease-in-out infinite alternate;
+    }
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, -20px) scale(1.1); }
+    }
+
+    .payment-card {
+      position: relative;
+      z-index: 20;
+      background: rgba(8, 18, 38, 0.8);
+      backdrop-filter: blur(16px);
+      border-radius: 48px;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      box-shadow: 
+        0 25px 50px -15px rgba(0,0,0,0.8),
+        0 0 0 0.5px rgba(0, 229, 255, 0.2) inset,
+        0 0 30px rgba(0, 229, 255, 0.1);
+      padding: 2.5rem 2rem;
+      max-width: 700px;
+      width: 100%;
+      margin: 0 auto;
+      animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      max-height: 98vh;
+      overflow-y: auto;
+    }
+    .payment-card::-webkit-scrollbar {
+      width: 4px;
+    }
+    .payment-card::-webkit-scrollbar-track {
+      background: rgba(0,229,255,0.05);
+    }
+    .payment-card::-webkit-scrollbar-thumb {
+      background: #00e5ff;
+      border-radius: 4px;
+    }
+
+    @keyframes cardAppear {
+      0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    .logo-store {
+      max-width: 140px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.6));
+      transition: filter 0.3s;
+    }
+    .logo-store:hover {
+      filter: drop-shadow(0 0 35px rgba(0, 229, 255, 0.9));
+    }
+
+    .cyber-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #00e5ff 0%, #4ecdc4 50%, #a8edea 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 1.6rem;
+      text-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+    }
+    .subtitle {
+      color: rgba(180, 220, 255, 0.6);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    .cart-summary {
+      background: rgba(0, 229, 255, 0.06);
+      border-radius: 24px;
+      padding: 1rem 1.2rem;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      margin-bottom: 1.5rem;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+      font-size: 0.9rem;
+      color: #d0e0ff;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0 0.3rem 0;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #00e5ff;
+      border-top: 2px solid rgba(0, 229, 255, 0.3);
+      margin-top: 0.3rem;
+    }
+    .cart-empty {
+      text-align: center;
+      color: rgba(180, 220, 255, 0.5);
+      padding: 1.5rem 0;
+    }
+
+    .form-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(0, 229, 255, 0.8);
+      margin-bottom: 6px;
+    }
+    .form-control, .form-select {
+      background: rgba(0, 229, 255, 0.05);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 24px;
+      color: #F0F5FF;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 500;
+      padding: 12px 18px;
+      transition: all 0.3s;
+      backdrop-filter: blur(4px);
+    }
+    .form-control:focus, .form-select:focus {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: #00e5ff;
+      box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.2);
+      outline: none;
+      color: white;
+    }
+    .form-control::placeholder {
+      color: rgba(255,255,255,0.2);
+      font-weight: 300;
+    }
+
+    .btn-pagar {
+      background: linear-gradient(135deg, #00c4d4, #00e5ff, #4ecdc4);
+      border: none;
+      color: #040D1A;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      padding: 14px 20px;
+      border-radius: 40px;
+      width: 100%;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 229, 255, 0.3);
+    }
+    .btn-pagar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-pagar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 229, 255, 0.5);
+    }
+    .btn-pagar:hover::before {
+      left: 100%;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 1.2rem;
+      color: rgba(0, 229, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: 0.2s;
+      background: rgba(0, 229, 255, 0.06);
+      padding: 6px 18px;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0, 229, 255, 0.1);
+    }
+    .back-home:hover {
+      color: #00e5ff;
+      background: rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.3);
+      text-shadow: 0 0 8px #00e5ff;
+    }
+
+    .error-message {
+      background: rgba(255, 70, 70, 0.1);
+      border-left: 3px solid #ff4d4d;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #ffb3b3;
+      margin-top: 0.8rem;
+    }
+
+    .modal-content {
+      background: #0E1628;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 36px;
+      backdrop-filter: blur(12px);
+    }
+    .comprobante {
+      background: rgb(250, 250, 250);
+      border-radius: 24px;
+      padding: 1.2rem;
+      border-left: 4px solid #00e5ff;
+    }
+    .btn-success, .btn-info {
+      border-radius: 40px;
+      font-weight: 600;
+      padding: 8px 18px;
+    }
+    .btn-success {
+      background: #00c4d4;
+      border: none;
+    }
+    .btn-info {
+      background: #0066ff;
+      border: none;
+    }
+
+    @media (max-width: 576px) {
+      .payment-card { padding: 1.5rem; }
+      .logo-store { max-width: 100px; }
+      .cyber-title { font-size: 1.3rem; }
+      .cart-item { font-size: 0.8rem; }
+      .cart-total { font-size: 1.1rem; }
+      .form-control, .form-select { padding: 10px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas class="particles-canvas" id="particlesCanvas"></canvas>
+  <div class="cyber-glow cyber-glow-1"></div>
+  <div class="cyber-glow cyber-glow-2"></div>
+  <div class="cyber-glow cyber-glow-3"></div>
+
+  <div class="payment-card">
+    <div class="logo-container">
+      <img src="/static/images/Logo.png" alt="TechStore" class="logo-store" onerror="this.src='https://placehold.co/140x50?text=TechStore&bg=0a1f3a&textColor=00e5ff'">
+    </div>
+
+    <div class="text-center mb-3">
+      <h2 class="cyber-title">Pago Seguro</h2>
+      <p class="subtitle">Revisa tu pedido y completa los datos</p>
+    </div>
+
+    <!-- Resumen del carrito -->
+    <div class="cart-summary" id="resumenCarrito">
+      <div id="itemsCarrito"></div>
+      <div class="cart-total">
+        <span>Total a pagar</span>
+        <span id="totalPagar">$0</span>
+      </div>
+    </div>
+
+    <!-- Formulario de pago -->
+    <form id="formPago">
+      <div class="mb-3">
+        <label class="form-label">📧 Correo electrónico</label>
+        <input type="email" class="form-control" id="email" placeholder="cliente@ejemplo.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">💳 Método de pago</label>
+        <select class="form-select" id="metodoPago">
+          <option value="credito">Tarjeta de Crédito</option>
+          <option value="debito">Tarjeta de Débito</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">🔢 Número de tarjeta (16 dígitos)</label>
+        <input type="text" class="form-control" id="numeroTarjeta" maxlength="16" placeholder="4242 4242 4242 4242" required>
+        <small class="text-muted" style="color:#6c8fcf;">* Si el número termina en 0000 la compra será rechazada (simulación)</small>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label class="form-label">📅 Fecha expiración (MM/AA)</label>
+          <input type="text" class="form-control" id="fechaExp" placeholder="12/28" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label">🔒 CVV</label>
+          <input type="text" class="form-control" id="cvv" maxlength="4" placeholder="123" required>
+        </div>
+      </div>
+      <div id="errorMsg" class="error-message"></div>
+      <!-- Botón de pago -->
+      <button type="button" class="btn-pagar mt-3" id="btnPagar">
+        <i class="fas fa-lock me-2"></i> Pagar ahora
+      </button>
+    </form>
+
+    <div class="text-center">
+      <a href="carrito.html" class="back-home"><i class="fas fa-arrow-left"></i> Volver al carrito</a>
+    </div>
+  </div>
+
+  <script>
+    // ===== PARTÍCULAS =====
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.r = Math.random() * 2.5 + 1;
+        this.a = Math.random() * 0.5 + 0.2;
+        this.color = Math.random() > 0.5 ? '0,229,255' : '78,205,196';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.a})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0,229,255,${0.05 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ===== LÓGICA DEL CARRITO =====
+    function obtenerCarrito() {
+      const carrito = localStorage.getItem('carrito');
+      return carrito ? JSON.parse(carrito) : [];
+    }
+
+    function renderizarResumen() {
+      const carrito = obtenerCarrito();
+      const itemsDiv = document.getElementById('itemsCarrito');
+      const totalSpan = document.getElementById('totalPagar');
+
+      if (carrito.length === 0) {
+        itemsDiv.innerHTML = '<div class="cart-empty">Tu carrito está vacío. <a href="Inicio.html">Ir a la tienda</a></div>';
+        totalSpan.textContent = '$0';
+        return;
+      }
+
+      let html = '';
+      let total = 0;
+      carrito.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        html += `
+          <div class="cart-item">
+            <span>${item.nombre} × ${item.cantidad}</span>
+            <span>$${subtotal.toLocaleString()}</span>
+          </div>
+        `;
+      });
+      itemsDiv.innerHTML = html;
+      totalSpan.textContent = `$${total.toLocaleString()}`;
+    }
+
+    // ===== LÓGICA DE PAGO =====
+    function guardarVenta(correo, productos, total) {
+      const ahora = new Date();
+      const fecha = ahora.toLocaleDateString('es-ES');
+      const hora = ahora.toLocaleTimeString('es-ES');
+      let ventas = JSON.parse(localStorage.getItem('techstore_ventas')) || [];
+      productos.forEach(item => {
+        ventas.push({
+          id: Date.now() + Math.random(),
+          correo: correo,
+          producto: item.nombre,
+          valor: item.precio * item.cantidad,
+          fecha: fecha,
+          hora: hora,
+          timestamp: ahora.getTime()
+        });
+      });
+      localStorage.setItem('techstore_ventas', JSON.stringify(ventas));
+      localStorage.removeItem('carrito');
+      return { fecha, hora };
+    }
+
+    function mostrarComprobante(ventaData, correo, total) {
+      const carrito = obtenerCarrito(); // ya vacío, pero lo usamos para contar artículos
+      const modalHtml = `
+        <div class="modal fade" id="comprobanteModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header border-success">
+                <h5 class="modal-title text-success"><i class="fas fa-check-circle"></i> ¡Pago exitoso!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="comprobante">
+                  <p><strong>✅ Compra confirmada</strong></p>
+                  <hr>
+                  <p><i class="fas fa-user"></i> <strong>Cliente:</strong> ${correo}</p>
+                  <p><i class="fas fa-shopping-basket"></i> <strong>Productos:</strong> ${carrito.length} artículos</p>
+                  <p><i class="fas fa-dollar-sign"></i> <strong>Total pagado:</strong> $${total.toLocaleString()}</p>
+                  <p><i class="fas fa-calendar-alt"></i> <strong>Fecha:</strong> ${ventaData.fecha} - ${ventaData.hora}</p>
+                  <p class="text-success mt-2"><i class="fas fa-check-double"></i> Tu compra ha sido registrada exitosamente.</p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <a href="Inicio.html" class="btn btn-success">Ir a la tienda</a>
+                <a href="informes.html" class="btn btn-info" target="_blank">Ver informes</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      const modal = new bootstrap.Modal(document.getElementById('comprobanteModal'));
+      modal.show();
+      document.getElementById('comprobanteModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+        window.location.href = 'Inicio.html';
+      });
+    }
+
+    // ===== EVENTO DEL BOTÓN =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // Renderizar resumen del carrito
+      renderizarResumen();
+
+      // Asignar evento al botón de pagar
+      document.getElementById('btnPagar').addEventListener('click', function() {
+        const carrito = obtenerCarrito();
+        if (carrito.length === 0) {
+          alert('El carrito está vacío. No puedes pagar.');
+          return;
+        }
+
+        const email = document.getElementById('email').value.trim();
+        const numeroTarjeta = document.getElementById('numeroTarjeta').value.replace(/\s/g, '');
+        const fechaExp = document.getElementById('fechaExp').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        const errorDiv = document.getElementById('errorMsg');
+
+        // Validaciones
+        if (!email || !numeroTarjeta || !fechaExp || !cvv) {
+          errorDiv.innerText = '❌ Todos los campos son obligatorios.';
+          return;
+        }
+        if (!/^\d{16}$/.test(numeroTarjeta)) {
+          errorDiv.innerText = '❌ El número de tarjeta debe tener 16 dígitos.';
+          return;
+        }
+        if (!/^\d{2}\/\d{2}$/.test(fechaExp)) {
+          errorDiv.innerText = '❌ Formato de fecha inválido (MM/AA).';
+          return;
+        }
+        if (!/^\d{3,4}$/.test(cvv)) {
+          errorDiv.innerText = '❌ CVV debe tener 3 o 4 dígitos.';
+          return;
+        }
+
+        // Simular autorización: rechaza si termina en 0000
+        const ultimos4 = numeroTarjeta.slice(-4);
+        if (ultimos4 === '0000') {
+          errorDiv.innerText = '⚠️ Su banco ha rechazado la transacción. Será redirigido al inicio.';
+          setTimeout(() => {
+            window.location.href = 'Inicio.html';
+          }, 2500);
+          return;
+        }
+
+        // Pago exitoso
+        const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+        const ventaData = guardarVenta(email, carrito, total);
+        mostrarComprobante(ventaData, email, total);
+        errorDiv.innerText = '';
+      });
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

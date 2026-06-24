@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Informes de ventas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: 'Arial', sans-serif;
+            padding: 2rem;
+        }
+        .report-card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        .table-ventas th {
+            background: #4ecdc4;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-limpiar {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 20px;
+        }
+        .btn-volver {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 20px;
+            text-decoration: none;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="report-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                <h2 style="font-family: 'Orbitron', sans-serif;"><i class="fas fa-chart-line"></i> Informes de ventas</h2>
+                <div>
+                    <a href="inicio.html" class="btn-volver me-2"><i class="fas fa-store"></i> Tienda</a>
+                    <button id="btnLimpiar" class="btn-limpiar"><i class="fas fa-trash-alt"></i> Limpiar historial</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-ventas">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Correo</th><th>Producto</th><th>Valor (COP)</th><th>Fecha</th><th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVentas">
+                        <td><td colspan="6" class="text-center">Cargando ventas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cargarVentas() {
+            const ventas = JSON.parse(localStorage.getItem('techstore_ventas')) || [];
+            const tbody = document.getElementById('tablaVentas');
+            if (ventas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">📭 No hay ventas registradas aún. Realiza una compra para ver el informe.</td></tr>';
+                return;
+            }
+            let html = '';
+            ventas.forEach((venta, idx) => {
+                html += `
+                    <tr>
+                        <td>${idx+1}</td>
+                        <td><i class="fas fa-envelope"></i> ${escapeHtml(venta.correo)}</td>
+                        <td><strong>${escapeHtml(venta.producto)}</strong></td>
+                        <td class="text-success fw-bold">$${venta.valor.toLocaleString('es-CO')}</td>
+                        <td>${escapeHtml(venta.fecha)}</td>
+                        <td>${escapeHtml(venta.hora)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        document.getElementById('btnLimpiar').addEventListener('click', () => {
+            if (confirm('⚠️ ¿Eliminar permanentemente todo el historial de ventas? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('techstore_ventas');
+                cargarVentas();
+                alert('Historial eliminado correctamente.');
+            }
+        });
+
+        cargarVentas();
+    </script>
+</body>
+</html>
